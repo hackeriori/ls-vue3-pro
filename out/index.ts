@@ -5,3 +5,4 @@ export {default as VirtualList} from '../src/components/virtualList/VirtualList.
 export * from '../src/setupFun/loopFunction'
 export * from '../src/setupFun/pageResize'
 export * from '../src/setupFun/radioButton'
+export * from '../src/directive/focus'

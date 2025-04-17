@@ -54,6 +54,11 @@ export const routes: RouteRecordRaw[] = [
     name: '虚拟列表',
     component: () => import('./components/virtualList/VirtualListTest.vue'),
   },
+  {
+    path: '/FocusTest',
+    name: '聚焦指令',
+    component: () => import('./directive/focusTest/FocusTest.vue'),
+  },
 ];
 
 const router = createRouter({
