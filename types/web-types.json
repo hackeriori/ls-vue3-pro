@@ -1,0 +1,240 @@
+{
+  "framework": "vue",
+  "name": "ls-vue3-pro",
+  "version": "1.1.0",
+  "js-types-syntax": "typescript",
+  "description-markup": "markdown",
+  "framework-config": {
+    "enable-when": {
+      "node-packages": [
+        "vue"
+      ],
+      "file-extensions": [
+        "vue"
+      ],
+      "ide-libraries": [
+        "vue"
+      ]
+    }
+  },
+  "contributions": {
+    "html": {
+      "vue-components": [
+        {
+          "name": "LsDialog",
+          "props": [
+            {
+              "name": "modelValue",
+              "description": "弹窗可见性",
+              "default": "false",
+              "type": "boolean"
+            },
+            {
+              "name": "titleText",
+              "description": "弹窗标题",
+              "type": "string",
+              "default": ""
+            },
+            {
+              "name": "width",
+              "description": "弹窗宽度",
+              "type": "string",
+              "default": "50%"
+            },
+            {
+              "name": "fullScreen",
+              "description": "是否全屏",
+              "type": "boolean",
+              "default": "false"
+            },
+            {
+              "name": "showFullScreen",
+              "description": "是否显示全屏按钮，全屏模式下该按钮无效（显示的情况下可双击标题栏切换全屏）",
+              "type": "boolean",
+              "default": "false"
+            },
+            {
+              "name": "closeConfirm",
+              "description": "是否显示关闭弹窗确认框",
+              "type": "boolean",
+              "default": "false"
+            },
+            {
+              "name": "closeTip",
+              "description": "关闭弹窗确认框的提示内容",
+              "type": "string",
+              "default": "弹窗即将关闭，确认吗？"
+            },
+            {
+              "name": "modal",
+              "description": "是否显示遮罩层",
+              "type": "boolean",
+              "default": "true"
+            },
+            {
+              "name": "draggable",
+              "description": "是否可通过标题栏拖动弹窗",
+              "type": "boolean",
+              "default": "true"
+            },
+            {
+              "name": "width",
+              "description": "弹窗宽度",
+              "type": "string",
+              "default": "50%"
+            },
+            {
+              "name": "appendToBody",
+              "description": "是否添加弹窗到body中以提高弹窗层级",
+              "type": "boolean",
+              "default": "false"
+            },
+            {
+              "name": "fitHeight",
+              "description": "body是否占据剩余高度（占据剩余宽度时，需要指定高度或全屏，如果超长自己加滚动条），默认使用内容撑开",
+              "type": "boolean",
+              "default": "false"
+            },
+            {
+              "name": "height",
+              "description": "弹窗的高度，如果不指定，则由内容撑开，如果指定，可配合fitHeight使用",
+              "type": "string",
+              "default": "unset"
+            },
+            {
+              "name": "closeOnClickModal",
+              "description": "是否可以通过点击遮罩层关闭弹窗",
+              "type": "boolean",
+              "default": "true"
+            },
+            {
+              "name": "boxCenter",
+              "description": "是否显示在外层相对盒子的中央",
+              "type": "boolean",
+              "default": "true"
+            },
+            {
+              "name": "left",
+              "description": "当boxCenter为false时，left的值",
+              "type": "string",
+              "default": "unset"
+            },
+            {
+              "name": "top",
+              "description": "当boxCenter为false时，top的值",
+              "type": "string",
+              "default": "unset"
+            },
+            {
+              "name": "right",
+              "description": "当boxCenter为false时，right的值",
+              "type": "string",
+              "default": "unset"
+            },
+            {
+              "name": "bottom",
+              "description": "当boxCenter为false时，bottom的值",
+              "type": "string",
+              "default": "unset"
+            },
+            {
+              "name": "showFooter",
+              "description": "是否显示脚部按钮区域",
+              "type": "boolean",
+              "default": "true"
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "description": "弹窗窗体插槽"
+            },
+            {
+              "name": "footer",
+              "description": "弹窗底部插槽 {closeDialog(): Promise<void>}"
+            }
+          ],
+          "js": {
+            "events": [
+              {
+                "name": "confirm",
+                "description": "点击确认按钮事件"
+              },
+              {
+                "name": "sizeChange",
+                "description": "全屏、非全屏切换事件"
+              },
+              {
+                "name": "dialogClose",
+                "description": "弹窗关闭事件（v-model绑定关闭除外，分别为点击关闭按钮关闭，遮罩关闭，ESC按键关闭），参数type: 'byButton' | 'byModal' | 'byKey'"
+              }
+            ]
+          }
+        },
+        {
+          "name": "ExpandableBox",
+          "props": [
+            {
+              "name": "isExpand",
+              "description": "盒子当前是否展开",
+              "required": true,
+              "type": "boolean"
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "description": "盒子展开的内容"
+            }
+          ]
+        },
+        {
+          "name": "RollNumber",
+          "props": [
+            {
+              "name": "number",
+              "description": "绑定的展示数字",
+              "required": true,
+              "type": "number"
+            },
+            {
+              "name": "fractionDigits",
+              "description": "小数位数，默认为0",
+              "required": false,
+              "type": "number"
+            },
+            {
+              "name": "duration",
+              "description": "动画时间，单位ms，默认300",
+              "required": false,
+              "type": "number"
+            },
+            {
+              "name": "trimRightZero",
+              "description": "去掉小数右侧多余的0，默认true",
+              "required": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "name": "VirtualList",
+          "props": [
+            {
+              "name": "listData",
+              "description": "列表数据",
+              "required": true,
+              "type": "array"
+            },
+            {
+              "name": "itemHeight",
+              "description": "每项高度",
+              "required": true,
+              "type": "number"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
