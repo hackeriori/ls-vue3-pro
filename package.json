@@ -6,9 +6,9 @@
   "module": "dist/lsVue3Pro.es.js",
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/song_qing_xing/ls-vue3-pro"
+    "url": "https://github.com/hackeriori/ls-vue3-pro"
   },
-  "homepage": "https://song_qing_xing.gitee.io/ls-vue3-pro/",
+  "homepage": "https://hackeriori.github.io/ls-vue3-pro/",
   "files": [
     "dist",
     "types"
