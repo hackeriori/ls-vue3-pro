@@ -1,0 +1,1 @@
+import{N as c}from"./index-B-ef8-WX.js";var e=(t,o)=>{const s=t.__vccOpts||t;for(const[n,r]of o)s[n]=r;return s};const a=(t,o)=>{if(t.install=s=>{for(const n of[t,...Object.values(o??{})])s.component(n.name,n)},o)for(const[s,n]of Object.entries(o))t[s]=n;return t},f=t=>(t.install=c,t);export{e as _,f as a,a as w};
