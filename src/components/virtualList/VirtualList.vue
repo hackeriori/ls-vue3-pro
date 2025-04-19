@@ -5,42 +5,32 @@ import type {PropType} from '../../../types/VirtualList';
 const props = defineProps<PropType>();
 const elRef = shallowRef<HTMLDivElement>() as ShallowRef<HTMLDivElement>;
 // 可视区域高度
-const screenHeight = ref(0);
+const boxHeight = ref(0);
 // 偏移量
 const startOffset = ref(0);
 // 起始索引
 const startIndex = ref(0);
 // 结束索引
-const endIndex = ref(0);
-// 列表总高度
-const listHeight = computed(() => {
-  return props.listData.length * props.itemHeight
-});
-// 可显示的列表项数
-const visibleCount = computed(() => {
-  return Math.ceil(screenHeight.value / props.itemHeight)
-});
+const endIndex = computed(() => Math.min(startIndex.value + Math.ceil(boxHeight.value / props.itemHeight), props.listData.length));
+// 列表总高度，为列表项数乘以每项高度
+const strutterHeight = computed(() => props.listData.length * props.itemHeight);
 // 偏移量对应的style
-const listTransform = computed(() => {
-  return `translateY(${startOffset.value}px)`;
-});
-// 获取真实显示列表数据
-const visibleData = computed(() => {
-  return props.listData.slice(startIndex.value, Math.min(endIndex.value, props.listData.length));
-});
+const listTransform = computed(() => `translateY(${startOffset.value}px)`);
+// 获取真实显示列表数据，为列表数据切片
+const visibleItems = computed(() => props.listData.slice(startIndex.value, endIndex.value));
 
 onMounted(() => {
-  screenHeight.value = elRef.value.clientHeight;
-  endIndex.value = startIndex.value + visibleCount.value;
+  boxHeight.value = elRef.value.clientHeight;
 });
 
+/**
+ * 滚动事件
+ */
 function scrollEvent() {
   // 当前滚动位置
   const scrollTop = elRef.value.scrollTop;
   // 此时的开始索引
   startIndex.value = Math.floor(scrollTop / props.itemHeight);
-  // 此时的结束索引
-  endIndex.value = startIndex.value + visibleCount.value;
   // 此时的偏移量
   startOffset.value = scrollTop - (scrollTop % props.itemHeight);
 }
@@ -48,9 +38,9 @@ function scrollEvent() {
 
 <template>
   <div ref="elRef" class="virtualListContainer" @scroll="scrollEvent">
-    <div class="listStrutter" :style="{ height: listHeight + 'px' }"></div>
+    <div class="listStrutter" :style="{ height: strutterHeight + 'px' }"></div>
     <div class="renderList" :style="{ transform: listTransform }">
-      <div class="renderItem" v-for="(item,index) in visibleData" :key="index" :style="{height: itemHeight + 'px'}">
+      <div class="renderItem" v-for="item in visibleItems" :key="item[itemKey]" :style="{height: itemHeight + 'px'}">
         <slot :item="item"></slot>
       </div>
     </div>

@@ -231,6 +231,12 @@
               "description": "每项高度",
               "required": true,
               "type": "number"
+            },
+            {
+              "name": "itemKey",
+              "description": "每项的key，用于v-for",
+              "required": true,
+              "type": "string"
             }
           ]
         }

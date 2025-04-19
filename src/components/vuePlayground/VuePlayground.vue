@@ -10,6 +10,7 @@ import {strInsertAt} from 'ls-base-lib';
 
 const props = defineProps<{
   code: string,
+  css?: string[],
   importMap?: Record<string, string>
 }>();
 const editorRef = shallowRef();
@@ -37,11 +38,14 @@ function createSandbox() {
   const template = document.createElement("iframe");
   template.setAttribute("style", "width: 100%;height: 100%;border: none");
   // 插入通信通道号
-  const temp = strInsertAt(previewTemplate, previewTemplate.indexOf('<script type="importmap">') + 36, `
+  let temp = strInsertAt(previewTemplate, previewTemplate.indexOf('<script type="importmap">') + 36, `
 \<script\>
 const messageFlag = ${messageFlag};
 \<\/script\>
 `);
+  // 插入外部依赖css
+  if (props.css)
+    temp = strInsertAt(temp, temp.indexOf('</title>') + 8, props.css.map(x => `<link rel="stylesheet" href="${x}">`).join('\n'));
   // 找到模块的位置并加入自定义模块
   const modules: string [] = ['"vue": "https://unpkg.com/vue@3.5.12/dist/vue.esm-browser.js"'];
   if (props.importMap)
