@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {defineAsyncComponent, ref} from 'vue';
+import {importMap} from '../../utils/importMap';
 
 const loadingExample = ref(true);
 const VuePlayground = defineAsyncComponent(async () => {
@@ -8,25 +9,21 @@ const VuePlayground = defineAsyncComponent(async () => {
     return x.default
   }
 )
-const importMap = {
-  'element-plus': 'https://unpkg.com/element-plus@2.9.7/dist/index.full.min.mjs',
-  '@element-plus/icons-vue': 'https://unpkg.com/@element-plus/icons-vue@2.3.1/dist/index.min.js',
-  'ls-base-lib': 'https://unpkg.com/ls-base-lib@2.0.4/dist/lsBaseLib.es.js',
-  'ls-vue3-pro': 'https://unpkg.com/ls-vue3-pro@1.2.0/dist/lsVue3Pro.es.js'
-};
+
 const exampleCode = `\<script setup\>
 import {vFocus} from 'ls-vue3-pro'
 \</script\>
 
 \<template\>
-  <input v-focus />
+  \<input v-focus type="text" placeholder="自动聚焦的输入框"/\>
 \</template\>`;
 </script>
 
 <template>
-  <div class="ls-marginV-1">可以看到输入框自动获取焦点了，因为使用了v-focus指令</div>
+  <div class="ls-marginV-1">v-focus指令，用于元素自动聚焦的自定义指令。</div>
+  <div class="ls-marginV-1">该指令会在元素挂载时自动调用 `focus()` 方法，使元素获得焦点。</div>
   <div v-loading="loadingExample">
-    <VuePlayground :code="exampleCode" :import-map="importMap" style="height: 250px"></VuePlayground>
+    <VuePlayground :code="exampleCode" :import-map="importMap" style="height: 147px"></VuePlayground>
   </div>
 </template>
 

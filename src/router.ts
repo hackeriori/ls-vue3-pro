@@ -59,6 +59,11 @@ export const routes: RouteRecordRaw[] = [
     name: '聚焦指令',
     component: () => import('./directive/focusTest/FocusTest.vue'),
   },
+  {
+    path: '/EllipsisTest',
+    name: '省略文本指令',
+    component: () => import('./directive/ellipsisTest/EllipsisTest.vue'),
+  },
 ];
 
 const router = createRouter({

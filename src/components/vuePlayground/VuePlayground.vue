@@ -186,7 +186,6 @@ onMounted(() => {
     <div class="splitLine"></div>
     <div class="height100 ls-flex-subItem-grow" ref="previewRef"></div>
   </div>
-
 </template>
 
 <style scoped>

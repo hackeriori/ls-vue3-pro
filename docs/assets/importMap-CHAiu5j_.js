@@ -1,0 +1,1 @@
+const s={"element-plus":"https://unpkg.com/element-plus@2.9.7/dist/index.full.min.mjs","@element-plus/icons-vue":"https://unpkg.com/@element-plus/icons-vue@2.3.1/dist/index.min.js","ls-base-lib":"https://unpkg.com/ls-base-lib@2.0.4/dist/lsBaseLib.es.js","ls-vue3-pro":"https://unpkg.com/ls-vue3-pro@1.2.0/dist/lsVue3Pro.es.js"};export{s as i};
