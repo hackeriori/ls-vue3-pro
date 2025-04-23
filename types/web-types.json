@@ -244,11 +244,25 @@
       "directives": [
         {
           "name": "v-focus",
-          "description": "用于元素自动聚焦的自定义指令",
+          "description": "用于元素自动聚焦的自定义指令。该指令会在元素挂载时自动调用 `focus()` 方法，使元素获得焦点。如果使用了 `.deep` 修饰符，则会递归查找子元素中的 `input` 或 `textarea` 并对其进行聚焦。通过传递数值给 `v-focus`，可以控制元素在失去焦点后重新聚焦的次数。",
           "modifiers": [
             {
               "name": "deep",
               "description": "递归查找子元素中输入框"
+            }
+          ],
+          "examples": [
+            {
+              "description": "直接聚焦",
+              "code": "<input v-focus type=\"text\" placeholder=\"自动聚焦的输入框\" />"
+            },
+            {
+              "description": "使用 .deep 修饰符聚焦深层的 input 或 textarea",
+              "code": "<el-input v-focus.deep placeholder=\"自动聚焦的输入框\" />"
+            },
+            {
+              "description": "控制重新聚焦次数",
+              "code": "<input v-focus=\"3\" type=\"text\" placeholder=\"最多重新聚焦3次\" />"
             }
           ]
         },
