@@ -1,10 +1,15 @@
 /**
  * 用于元素自动聚焦的自定义指令。
  * 该指令会在元素挂载时自动调用 `focus()` 方法，使元素获得焦点。
+ * 如果使用了 `.deep` 修饰符，则会递归查找子元素中的 `input` 或 `textarea` 并对其进行聚焦。
  *
  * @example
  * ```vue
+ * <!-- 直接聚焦 -->
  * <input v-focus type="text" placeholder="自动聚焦的输入框" />
+ *
+ * <!-- 使用 .deep 修饰符聚焦深层的 input 或 textarea -->
+ * <el-input v-focus.deep placeholder="自动聚焦的输入框" />
  * ```
  */
 export declare const vFocus: Directive

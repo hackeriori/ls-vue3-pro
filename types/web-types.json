@@ -1,7 +1,7 @@
 {
   "framework": "vue",
   "name": "ls-vue3-pro",
-  "version": "1.1.0",
+  "version": "1.3.2",
   "js-types-syntax": "typescript",
   "description-markup": "markdown",
   "framework-config": {
@@ -239,6 +239,22 @@
               "type": "string"
             }
           ]
+        }
+      ],
+      "directives": [
+        {
+          "name": "v-focus",
+          "description": "用于元素自动聚焦的自定义指令",
+          "modifiers": [
+            {
+              "name": "deep",
+              "description": "递归查找子元素中输入框"
+            }
+          ]
+        },
+        {
+          "name": "v-ellipsis",
+          "description": "用于实现文本超出时自动隐藏并显示 title 提示"
         }
       ]
     }

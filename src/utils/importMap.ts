@@ -7,5 +7,6 @@ export const importMap = {
 
 export const importCss = [
   "https://unpkg.com/ls-base-lib@2.0.4/dist/css/ls.css",
+  "https://unpkg.com/element-plus@2.9.7/dist/index.css",
   import.meta.env.DEV ? '/ls-vue3-pro.css' : 'https://unpkg.com/ls-vue3-pro@1.3.1/dist/ls-vue3-pro.css'
 ]
