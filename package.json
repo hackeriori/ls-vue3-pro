@@ -1,6 +1,6 @@
 {
   "name": "ls-vue3-pro",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "基于vue3的一些组件及可复用代码块,用于工作",
   "main": "dist/lsVue3Pro.umd.js",
   "module": "dist/lsVue3Pro.es.js",
