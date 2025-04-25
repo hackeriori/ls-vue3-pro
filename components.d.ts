@@ -13,6 +13,11 @@ declare module 'vue' {
     CloseExp: typeof import('./src/components/lsDialog/lsDialogTest/CloseExp.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
+    ElRadio: typeof import('element-plus/es')['ElRadio']
+    ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
+    ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
+    ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ExampleBox: typeof import('./src/components/exampleBox/ExampleBox.vue')['default']
     ExpandableBox: typeof import('./src/components/expandableBox/ExpandableBox.vue')['default']
     ExpandableBoxTest: typeof import('./src/components/expandableBox/ExpandableBoxTest.vue')['default']
@@ -31,5 +36,8 @@ declare module 'vue' {
     VirtualListTest: typeof import('./src/components/virtualList/VirtualListTest.vue')['default']
     VuePlayground: typeof import('./src/components/vuePlayground/VuePlayground.vue')['default']
     WidthHighExp: typeof import('./src/components/lsDialog/lsDialogTest/WidthHighExp.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }
