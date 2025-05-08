@@ -55,6 +55,11 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('./components/virtualList/VirtualListTest.vue'),
   },
   {
+    path: '/DynamicHeightVirtualListTest',
+    name: '不定高虚拟列表',
+    component: () => import('./components/dynamicHeightVirtualList/DynamicHeightVirtualListTest.vue'),
+  },
+  {
     path: '/FocusTest',
     name: '聚焦指令',
     component: () => import('./directive/focusTest/FocusTest.vue'),
