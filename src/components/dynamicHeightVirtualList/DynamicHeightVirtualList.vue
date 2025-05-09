@@ -1,12 +1,51 @@
 <script setup lang="ts">
-import {ref, computed, onMounted, watch, useTemplateRef} from 'vue'
+import {computed, onMounted, ref, useTemplateRef, watch, nextTick, shallowRef, triggerRef} from 'vue'
 import type {PropType} from '../../../types/DynamicHeightVirtualList';
 
-interface PositionType {
-  // 高度
-  height: number,
-  // 顶边所在高度
-  top: number,
+class FenwickTree {
+  n: number;
+  tree: number[];
+
+  constructor(n: number) {
+    this.n = n;
+    this.tree = Array(n + 1).fill(0);
+  }
+
+  init(arr: number[]) {
+    for (let i = 0; i < this.n; i++) {
+      this.update(i, arr[i]);
+    }
+  }
+
+  update(i: number, delta: number) {
+    // 内部用 1-based
+    for (let x = i + 1; x <= this.n; x += x & -x) {
+      this.tree[x] += delta;
+    }
+  }
+
+  query(i: number): number {
+    let s = 0;
+    for (let x = i + 1; x > 0; x -= x & -x) {
+      s += this.tree[x];
+    }
+    return s;
+  }
+
+  lowerBound(target: number): number {
+    // 在 tree 中寻找最小 idx，使得 sum(idx) > target
+    // 标准 BIT 按位跳，O(log N)
+    let idx = 0;
+    let bitMask = 1 << Math.floor(Math.log2(this.n));
+    for (; bitMask > 0; bitMask >>= 1) {
+      const t = idx + bitMask;
+      if (t <= this.n && this.tree[t] <= target) {
+        target -= this.tree[t];
+        idx = t;
+      }
+    }
+    return idx; // 0-based 结果
+  }
 }
 
 const props = defineProps<PropType>();
@@ -15,31 +54,30 @@ const props = defineProps<PropType>();
 const elRef = useTemplateRef<HTMLElement>('elRef');
 // 子模板引用
 const itemRefs = useTemplateRef<HTMLElement[]>('itemRefs');
-// 可视区域高度
+// 容器高度
 const boxHeight = ref(0);
 // 起始索引
-const startIndex = ref(0);
-// 缓存位置数组
-const positions = ref<PositionType[]>(props.listData.map((_item, index) => ({
-  height: props.itemHeight,
-  top: index * props.itemHeight
-})));
+const startIndex = shallowRef(0);
+// 保存每项的当前真实高度
+let heights = props.listData.map(() => props.itemHeight);
+// Fenwick 树
+let bit = new FenwickTree(props.listData.length);
+bit.init(heights);
+// 一个只会自增、不承载实际业务数据的 ref
+const trigger = ref(0)
 // 结束索引，由于预估高度是预估的最小值，所以这里结束索引必定大于等于视口的数量，就没必要缓冲
 const endIndex = computed(() => Math.min(startIndex.value + Math.ceil(boxHeight.value / props.itemHeight), props.listData.length));
 // 偏移量
-const startOffset = computed(() => positions.value[startIndex.value]?.top || 0);
+const startOffset = computed(() => startIndex.value > 0 ? bit.query(startIndex.value - 1) : 0);
 // 列表总高度，为缓存位置的最后一项的底边
 const listHeight = computed(() => {
-  if (positions.value.length) {
-    const lastItem = positions.value[positions.value.length - 1];
-    return lastItem.top + lastItem.height;
-  }
-  return 0;
+  // 让 computed 订阅 trigger，避免bit更新后无法触发更新
+  trigger.value
+  return bit.query(props.listData.length - 1);
 });
 // 偏移量对应的style
-const listTransform = computed(() => {
-  return `translateY(${startOffset.value}px)`
-});
+const listTransform = computed(() => `translateY(${startOffset.value}px)`
+);
 // 可视区域数据
 const visibleData = computed(() => props.listData.slice(startIndex.value, endIndex.value));
 
@@ -47,48 +85,33 @@ const visibleData = computed(() => props.listData.slice(startIndex.value, endInd
  * 获取列表起始索引
  */
 function getStartIndex(scrollTop = 0) {
-  let startIdx = 0
-  let endIdx = positions.value.length - 1
-
-  while (startIdx <= endIdx) {
-    const midIndex = Math.round((startIdx + endIdx) / 2)
-    const top = positions.value[midIndex].top
-    const bottom = positions.value[midIndex].top + positions.value[midIndex].height;
-    if (top <= scrollTop && bottom > scrollTop) {
-      return midIndex
-    } else if (bottom <= scrollTop) {
-      startIdx = midIndex + 1
-    } else if (top > scrollTop) {
-      endIdx = midIndex - 1
-    }
-  }
+  // 找最小的 idx 使 prefixSum(idx) > scrollTop
+  // lowerBound 返回 0-based idx，且 prefixSum(idx) <= scrollTop，所以下面 +1
+  const idx = bit.lowerBound(scrollTop);
+  return Math.min(idx, props.listData.length - 1);
 }
 
 /**
  * 修正内容高度
  */
 function updateItemsSize() {
-  if (!itemRefs.value?.length) return;
-  // 先更新高度
-  let dirty = false;
-  let firstDirtyIndex = -1;
+  if (!itemRefs.value?.length) return
+
+  let dirty = false
   itemRefs.value.forEach(node => {
-    const idx = Number(node.dataset.index);
-    const h = node.offsetHeight;
-    if (positions.value[idx].height !== h) {
-      if (firstDirtyIndex < 0) {
-        firstDirtyIndex = idx + 1;
-      }
-      positions.value[idx].height = h;
-      dirty = true;
+    const idx = Number(node.dataset.index)
+    const h = node.offsetHeight
+    const oldH = heights[idx]
+    if (h !== oldH) {
+      heights[idx] = h
+      bit.update(idx, h - oldH)
+      dirty = true
     }
-  });
-  // 只要有任何高度变化，就从第一个变化项的后一项开始，累加重算所有 top
+  })
+
   if (dirty) {
-    for (let i = firstDirtyIndex; i < positions.value.length; i++) {
-      const prev = positions.value[i - 1];
-      positions.value[i].top = prev.top + prev.height;
-    }
+    // 强制让 listHeight 重新计算
+    trigger.value++
   }
 }
 
@@ -96,19 +119,42 @@ function updateItemsSize() {
  * 滚动事件
  */
 function scrollEvent() {
-  const scrollTop = elRef.value!.scrollTop
-  const offset = positions.value[startIndex.value].top
-  const height = positions.value[startIndex.value].height
-  // 还在当前窗口内，啥也不做
-  if (scrollTop >= offset && scrollTop <= offset + height) {
-    return
+  const scrollTop = elRef.value!.scrollTop;
+  const idx = getStartIndex(scrollTop);
+  if (idx !== startIndex.value) {
+    startIndex.value = idx;
   }
-  startIndex.value = getStartIndex(scrollTop)!
 }
 
 // 在可视区变更时测量一次，nextTick 保证 DOM 已更新
 watch([visibleData, startIndex], () => {
   updateItemsSize();
+}, {flush: 'post'});
+
+watch(() => props.listData.length, async (newValue, OldValue) => {
+  if (newValue === OldValue)
+    return;
+  heights = Array.from({length: newValue}).map(() => props.itemHeight);
+  bit = new FenwickTree(newValue);
+  bit.init(heights);
+  // 重新计算startOffset
+  const lowIndex = Math.max(newValue - Math.ceil(boxHeight.value / props.itemHeight), 0);
+  if (startIndex.value >= lowIndex) {
+    startIndex.value = lowIndex;
+    await nextTick();
+    // 更新高度
+    updateItemsSize();
+    elRef.value!.scrollTo(0, elRef.value!.scrollHeight - elRef.value!.clientHeight);
+  } else {
+    const diff = startOffset.value - elRef.value!.scrollTop;
+    // 更新高度
+    updateItemsSize();
+    trigger.value++;
+    await nextTick();
+    triggerRef(startIndex);
+    elRef.value!.scrollTo(0, startOffset.value - diff);
+  }
+  // scrollEvent();
 }, {flush: 'post'});
 
 onMounted(() => {
@@ -131,7 +177,7 @@ onMounted(() => {
 
 <style scoped>
 .virtualListContainer {
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   position: relative;
   height: 100%;

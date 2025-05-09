@@ -1,4 +1,8 @@
 <template>
+  <div class="ls-abs-inner" style="z-index: 2">
+    <button @click="addItems">add items</button>
+    <button @click="removeItems">remove items</button>
+  </div>
   <DynamicHeightVirtualList
     :list-data="items"
     item-key="id"
@@ -13,18 +17,31 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import {ref} from 'vue';
 import DynamicHeightVirtualList from './DynamicHeightVirtualList.vue';
 
-const items = ref(Array.from({ length: 100000 }).map((_, index) => ({id: index, text: `${index}.${generateRandomFixedCharString()}`})));
+const items = ref(Array.from({length: 1000}).map((_, index) => ({
+  id: index, text: `${index}.${generateRandomFixedCharString()}`
+})));
 
 // 生成一个长度为10-1000的随机长度固定字母的字符串
 function generateRandomFixedCharString(): string {
   // 随机选一个 A-Z 的大写字母
   const randomChar = String.fromCharCode(65 + Math.floor(Math.random() * 26));
   // 生成 10 到 1000 之间的随机长度
-  const length = Math.floor(Math.random() * (1000 - 10 + 1)) + 10;
+  const length = Math.floor(Math.random() * (991)) + 10;
   return randomChar.repeat(length);
+}
+
+function addItems() {
+  const newItems = Array.from({length: 1000}).map((_, index) => ({
+    id: 1000 + index, text: `${1000 + index}.${generateRandomFixedCharString()}`
+  }));
+  items.value = [...items.value, ...newItems];
+}
+
+function removeItems() {
+  items.value = items.value.slice(0, 500);
 }
 </script>
 
