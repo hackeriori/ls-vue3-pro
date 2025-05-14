@@ -21,6 +21,10 @@ const visibleItems = computed(() => props.listData.slice(startIndex.value, endIn
 
 onMounted(() => {
   boxHeight.value = elRef.value.clientHeight;
+  const observer = new ResizeObserver(() => {
+    boxHeight.value = elRef.value!.clientHeight;
+  });
+  observer.observe(elRef.value!);
 });
 
 /**

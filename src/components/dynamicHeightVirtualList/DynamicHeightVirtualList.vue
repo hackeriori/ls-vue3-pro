@@ -4,16 +4,26 @@ import type {PropType} from '../../../types/DynamicHeightVirtualList';
 
 class FenwickTree {
   n: number;
-  tree: number[];
+  tree: Int32Array;
+  maxBit: number;
 
   constructor(n: number) {
     this.n = n;
-    this.tree = Array(n + 1).fill(0);
+    this.maxBit = 1 << Math.floor(Math.log2(n));
+    this.tree = new Int32Array(n + 1);
   }
 
   init(arr: number[]) {
-    for (let i = 0; i < this.n; i++) {
-      this.update(i, arr[i]);
+    // 1. 先把每个叶子节点（1-based）设为对应的原始值
+    for (let i = 1; i <= this.n; i++) {
+      this.tree[i] = arr[i - 1];
+    }
+    // 2. 再把每个节点的值「推」到它的父节点
+    for (let i = 1; i <= this.n; i++) {
+      const j = i + (i & -i);   // 父节点索引
+      if (j <= this.n) {
+        this.tree[j] += this.tree[i];
+      }
     }
   }
 
@@ -36,7 +46,7 @@ class FenwickTree {
     // 在 tree 中寻找最小 idx，使得 sum(idx) > target
     // 标准 BIT 按位跳，O(log N)
     let idx = 0;
-    let bitMask = 1 << Math.floor(Math.log2(this.n));
+    let bitMask = this.maxBit;
     for (; bitMask > 0; bitMask >>= 1) {
       const t = idx + bitMask;
       if (t <= this.n && this.tree[t] <= target) {
@@ -120,13 +130,16 @@ function updateItemsSize() {
  */
 function scrollEvent() {
   const scrollTop = elRef.value!.scrollTop;
+  // 还在当前窗口内，啥也不做
+  if (scrollTop >= startOffset.value && scrollTop <= startOffset.value + heights[startIndex.value])
+    return
   const idx = getStartIndex(scrollTop);
   if (idx !== startIndex.value) {
     startIndex.value = idx;
   }
 }
 
-// 在可视区变更时测量一次，nextTick 保证 DOM 已更新
+// 在可视区变更时测量一次
 watch([visibleData, startIndex], () => {
   updateItemsSize();
 }, {flush: 'post'});
@@ -154,12 +167,15 @@ watch(() => props.listData.length, async (newValue, OldValue) => {
     triggerRef(startIndex);
     elRef.value!.scrollTo(0, startOffset.value - diff);
   }
-  // scrollEvent();
 }, {flush: 'post'});
 
 onMounted(() => {
   // 更新容器高度，此时子项还未加载，因为endIndex为0
   boxHeight.value = elRef.value!.clientHeight;
+  const observer = new ResizeObserver(() => {
+    boxHeight.value = elRef.value!.clientHeight;
+  });
+  observer.observe(elRef.value!);
 })
 </script>
 
