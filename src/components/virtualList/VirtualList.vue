@@ -11,7 +11,7 @@ const startOffset = ref(0);
 // 起始索引
 const startIndex = ref(0);
 // 结束索引
-const endIndex = computed(() => Math.min(startIndex.value + Math.ceil(boxHeight.value / props.itemHeight), props.listData.length));
+const endIndex = computed(() => Math.min(startIndex.value + Math.ceil(boxHeight.value / props.itemHeight) + 1, props.listData.length));
 // 列表总高度，为列表项数乘以每项高度
 const strutterHeight = computed(() => props.listData.length * props.itemHeight);
 // 偏移量对应的style
