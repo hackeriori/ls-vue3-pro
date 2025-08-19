@@ -1,4 +1,4 @@
-import{d as p}from"./ExampleBox-C2ES5wUX.js";import{d as o,a as l,A as n,f as r,w as t,e as u,g as m,o as i}from"./index-BFucdXBp.js";import"./base-0FEUq5dt.js";import"./install-B0Us9wOk.js";import"./index-CMwrhjA-.js";const g=o({__name:"PageResizeExp",setup(a){return(s,e)=>{const d=u("router-link");return i(),l("div",null,[e[2]||(e[2]=n("h2",null,"新打开的页面按1600*757的比例缩放至全屏，调整浏览器窗口大小，可以看到页面始终保持比例缩放。",-1)),r(p,null,{code:t(()=>e[1]||(e[1]=[n("pre",null,`<template>
+import{d as p}from"./ExampleBox-DPW501By.js";import{d as o,a as l,A as n,f as r,w as t,e as u,g as m,o as i}from"./index-ClGOKeQm.js";import"./base-BBc8Qiim.js";import"./install-CWDznwhL.js";import"./index-DVUzuzyJ.js";const g=o({__name:"PageResizeExp",setup(a){return(s,e)=>{const d=u("router-link");return i(),l("div",null,[e[2]||(e[2]=n("h2",null,"新打开的页面按1600*757的比例缩放至全屏，调整浏览器窗口大小，可以看到页面始终保持比例缩放。",-1)),r(p,null,{code:t(()=>e[1]||(e[1]=[n("pre",null,`<template>
   <div ref="elRef" class="ls-flex" style="width: 1600px;height: 757px">
     <div style="width: 33%;background-color: rgba(255,0,0,0.1)">
       <h1>我是左面板</h1>
