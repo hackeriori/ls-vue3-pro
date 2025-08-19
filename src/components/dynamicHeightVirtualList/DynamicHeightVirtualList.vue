@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref, useTemplateRef, watch, nextTick, shallowRef, triggerRef} from 'vue'
+import {computed, onMounted, ref, useTemplateRef, watch, nextTick, shallowRef, triggerRef, onUnmounted} from 'vue'
 import type {PropType} from '../../../types/DynamicHeightVirtualList';
 
 class FenwickTree {
@@ -86,10 +86,12 @@ const listHeight = computed(() => {
   return bit.query(props.listData.length - 1);
 });
 // 偏移量对应的style
-const listTransform = computed(() => `translateY(${startOffset.value}px)`
+const listTransform = computed(() => `translate3D(0, ${startOffset.value}px, 0)`
 );
 // 可视区域数据
 const visibleData = computed(() => props.listData.slice(startIndex.value, endIndex.value));
+// 观察器
+let observer: ResizeObserver | null = null;
 
 /**
  * 获取列表起始索引
@@ -172,10 +174,14 @@ watch(() => props.listData.length, async (newValue, OldValue) => {
 onMounted(() => {
   // 更新容器高度，此时子项还未加载，因为endIndex为0
   boxHeight.value = elRef.value!.clientHeight;
-  const observer = new ResizeObserver(() => {
+  observer = new ResizeObserver(() => {
     boxHeight.value = elRef.value!.clientHeight;
   });
   observer.observe(elRef.value!);
+})
+
+onUnmounted(()=>{
+  observer?.disconnect();
 })
 </script>
 

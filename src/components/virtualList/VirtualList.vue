@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, ref, type ShallowRef, shallowRef} from 'vue';
+import {computed, onMounted, onUnmounted, ref, type ShallowRef, shallowRef} from 'vue';
 import type {PropType} from '../../../types/VirtualList';
 
 const props = defineProps<PropType>();
@@ -15,17 +15,23 @@ const endIndex = computed(() => Math.min(startIndex.value + Math.ceil(boxHeight.
 // 列表总高度，为列表项数乘以每项高度
 const strutterHeight = computed(() => props.listData.length * props.itemHeight);
 // 偏移量对应的style
-const listTransform = computed(() => `translateY(${startOffset.value}px)`);
+const listTransform = computed(() => `translate3D(0, ${startOffset.value}px, 0)`);
 // 获取真实显示列表数据，为列表数据切片
 const visibleItems = computed(() => props.listData.slice(startIndex.value, endIndex.value));
+// 观察器
+let observer: ResizeObserver | null = null;
 
 onMounted(() => {
   boxHeight.value = elRef.value.clientHeight;
-  const observer = new ResizeObserver(() => {
+  observer = new ResizeObserver(() => {
     boxHeight.value = elRef.value!.clientHeight;
   });
   observer.observe(elRef.value!);
 });
+
+onUnmounted(()=>{
+  observer?.disconnect();
+})
 
 /**
  * 滚动事件
@@ -41,7 +47,7 @@ function scrollEvent() {
 </script>
 
 <template>
-  <div ref="elRef" class="virtualListContainer" @scroll="scrollEvent">
+  <div ref="elRef" class="virtualListContainer" @scroll.passive="scrollEvent">
     <div class="listStrutter" :style="{ height: strutterHeight + 'px' }"></div>
     <div class="renderList" :style="{ transform: listTransform }">
       <div class="renderItem" v-for="item in visibleItems" :key="item[itemKey]" :style="{height: itemHeight + 'px'}">
